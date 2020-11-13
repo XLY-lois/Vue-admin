@@ -6,19 +6,32 @@
         <img src="../assets/logo.png" alt="" />
       </div>
       <!-- 登录表单 -->
-      <el-form label-width="0px" class="login_form">
+      <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="loginFormRules"
+        label-width="0px"
+        class="login_form"
+      >
         <!-- 用户名 -->
-        <el-form-item>
-          <el-input prefix-icon="el-icon-user"></el-input>
+        <el-form-item prop="userName">
+          <el-input
+            v-model="loginForm.userName"
+            prefix-icon="el-icon-user"
+          ></el-input>
         </el-form-item>
         <!-- 密码 -->
-        <el-form-item>
-          <el-input prefix-icon="el-icon-lock"></el-input>
+        <el-form-item prop="password">
+          <el-input
+            v-model="loginForm.password"
+            prefix-icon="el-icon-lock"
+            type="password"
+          ></el-input>
         </el-form-item>
         <!-- 按钮 -->
         <el-form-item class="btns">
-          <el-button type="primary">登录</el-button>
-          <el-button type="info">重置</el-button>
+          <el-button type="primary" @click="login()">登录</el-button>
+          <el-button type="info" @click="resetLoinForm()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -26,7 +39,63 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      loginForm: {
+        userName: "",
+        password: "",
+      }, //登录表单的数据绑定对象
+      loginFormRules: {
+        //验证用户名是否合法
+        userName: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 5,
+            max: 10,
+            message: "长度在 5 到 10 个字符",
+            trigger: "blur",
+          },
+        ],
+        //验证密码
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 15,
+            message: "长度在 6 到 15 个字符",
+            trigger: "blur",
+          },
+        ],
+      }, //表单的验证规则对象
+    }
+  },
+  methods: {
+    resetLoinForm() {
+      //重置表单
+      this.$refs.loginFormRef.resetFields();
+    },
+    // login() {
+    //   this.$refs.loginFormRef.validate(async valid => { //回调函数中的参数1是校验结果
+    //     console.log(valid);
+    //     if(!valid) return; //为false直接return不发起请求
+    //     const { data: res } = await this.$http.post('/login',this.loginForm); //解构赋值，将返回的数据中的data取出用res存放
+    //     console.log(res);
+    //     if(res.meta.status !== 200) return console.log('登录失败')
+    //   })
+    // }
+    login() {
+      this.$http
+        .post("/login", this.loginForm)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>

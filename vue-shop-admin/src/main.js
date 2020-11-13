@@ -10,7 +10,7 @@ import './assets/css/global.css' //全局样式
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.prototype.$http = axios;
-
+axios.defaults.baseURL = '/api/'  // api 即上面 vue.config.js 中配置的地址
 
 new Vue({
   router,
