@@ -14,9 +14,9 @@
         class="login_form"
       >
         <!-- 用户名 -->
-        <el-form-item prop="userName">
+        <el-form-item prop="username">
           <el-input
-            v-model="loginForm.userName"
+            v-model="loginForm.username"
             prefix-icon="el-icon-user"
           ></el-input>
         </el-form-item>
@@ -43,12 +43,12 @@ export default {
   data() {
     return {
       loginForm: {
-        userName: "",
-        password: "",
+        username: "lois0912",
+        password: "123456",
       }, //登录表单的数据绑定对象
       loginFormRules: {
         //验证用户名是否合法
-        userName: [
+        username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
           {
             min: 5,
@@ -79,20 +79,26 @@ export default {
     //   this.$refs.loginFormRef.validate(async valid => { //回调函数中的参数1是校验结果
     //     console.log(valid);
     //     if(!valid) return; //为false直接return不发起请求
-    //     const { data: res } = await this.$http.post('/login',this.loginForm); //解构赋值，将返回的数据中的data取出用res存放
+    //     const { data: res } = await this.$http.post('/login.do',this.loginForm); //解构赋值，将返回的数据中的data取出用res存放
     //     console.log(res);
-    //     if(res.meta.status !== 200) return console.log('登录失败')
+    //     // if(res.code !== 200) return console.log('登录失败')
     //   })
-    // }
+    // },
     login() {
       this.$http
-        .post("/login", this.loginForm)
+        .post("/system/login.do", {
+          username: this.loginForm.username,
+          password: this.loginForm.password,
+        })
         .then(function (response) {
-          console.log(response.data);
+          console.log(response);
         })
         .catch(function (error) {
           console.log(error);
         });
+
+        //2
+
     },
   },
 };
