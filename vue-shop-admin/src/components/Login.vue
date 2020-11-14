@@ -43,28 +43,28 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "lois0912",
-        password: "123456",
+        username: 'lois0912',
+        password: '123456',
       }, //登录表单的数据绑定对象
       loginFormRules: {
         //验证用户名是否合法
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
+          { required: true, message: '请输入用户名', trigger: 'blur' },
           {
             min: 5,
             max: 10,
-            message: "长度在 5 到 10 个字符",
-            trigger: "blur",
+            message: '长度在 5 到 10 个字符',
+            trigger: 'blur',
           },
         ],
         //验证密码
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
+          { required: true, message: '请输入密码', trigger: 'blur' },
           {
             min: 6,
             max: 15,
-            message: "长度在 6 到 15 个字符",
-            trigger: "blur",
+            message: '长度在 6 到 15 个字符',
+            trigger: 'blur',
           },
         ],
       }, //表单的验证规则对象
@@ -73,32 +73,29 @@ export default {
   methods: {
     resetLoinForm() {
       //重置表单
-      this.$refs.loginFormRef.resetFields();
+      this.$refs.loginFormRef.resetFields()
     },
     login() {
-      this.$refs.loginFormRef.validate(async valid => { //回调函数中的参数1是校验结果
-        console.log(valid);
-        if(!valid) return; //为false直接return不发起请求
-        const res = await
-        this.$http
-        .post("/system/login.do", {
-          username: this.loginForm.username,
-          password: this.loginForm.password,
-        })
-        .then(function (res) {
-          return res;
-        })
+      this.$refs.loginFormRef.validate(async (valid) => {
+        //回调函数中的参数1是校验结果
+        console.log(valid)
+        if (!valid) return //为false直接return不发起请求
+        const res = await this.$http
+          .post('/system/login.do', this.loginForm)
+          .then(function (res) {
+            return res
+          })
         // .catch(function (error) {
         //   console.log(error);
         // });
 
-        console.log(res);
-        if(res === '该用户不存在！') return this.$message.error('登录失败QAQ');
-        this.$message.success('登录成功:)');
+        console.log(res.data)
+        if (res.data.code !== 200) return this.$message.error('登录失败QAQ')
+        this.$message.success('登录成功:)')
 
-        // window.sessionStorage.setItem('token',res.data.token);// 由于后端暂时没有给我token 先直接用data中的值代替token
-        window.sessionStorage.setItem('token',res.data);//18
-        this.$router.push('/home');//登录后跳转到home
+        window.sessionStorage.setItem('token', res.data.token) // 由于后端暂时没有给我token 先直接用data中的值代替token
+        // window.sessionStorage.setItem("token", res.data); //18
+        this.$router.push('/home') //登录后跳转到home
       })
     },
     // login() {
@@ -118,7 +115,7 @@ export default {
 
     // },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
