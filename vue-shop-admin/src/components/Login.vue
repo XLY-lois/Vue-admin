@@ -75,31 +75,48 @@ export default {
       //重置表单
       this.$refs.loginFormRef.resetFields();
     },
-    // login() {
-    //   this.$refs.loginFormRef.validate(async valid => { //回调函数中的参数1是校验结果
-    //     console.log(valid);
-    //     if(!valid) return; //为false直接return不发起请求
-    //     const { data: res } = await this.$http.post('/login.do',this.loginForm); //解构赋值，将返回的数据中的data取出用res存放
-    //     console.log(res);
-    //     // if(res.code !== 200) return console.log('登录失败')
-    //   })
-    // },
     login() {
-      this.$http
+      this.$refs.loginFormRef.validate(async valid => { //回调函数中的参数1是校验结果
+        console.log(valid);
+        if(!valid) return; //为false直接return不发起请求
+        const res = await
+        this.$http
         .post("/system/login.do", {
           username: this.loginForm.username,
           password: this.loginForm.password,
         })
-        .then(function (response) {
-          console.log(response);
+        .then(function (res) {
+          return res;
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+        // .catch(function (error) {
+        //   console.log(error);
+        // });
 
-        //2
+        console.log(res);
+        if(res === '该用户不存在！') return this.$message.error('登录失败QAQ');
+        this.$message.success('登录成功:)');
 
+        // window.sessionStorage.setItem('token',res.data.token);// 由于后端暂时没有给我token 先直接用data中的值代替token
+        window.sessionStorage.setItem('token',res.data);//18
+        this.$router.push('/home');//登录后跳转到home
+      })
     },
+    // login() {
+    //   this.$http
+    //     .post("/system/login.do", {
+    //       username: this.loginForm.username,
+    //       password: this.loginForm.password,
+    //     })
+    //     .then(function (response) {
+    //       console.log(response);
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+
+    //     //2
+
+    // },
   },
 };
 </script>
