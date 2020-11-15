@@ -78,7 +78,7 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async (valid) => {
         //回调函数中的参数1是校验结果
-        console.log(valid)
+        // console.log(valid)
         if (!valid) return //为false直接return不发起请求
         const res = await this.$http
           .post('/system/login.do', this.loginForm)
@@ -89,7 +89,7 @@ export default {
         //   console.log(error);
         // });
 
-        console.log(res.data)
+        console.log(res)
         if (res.data.code !== 200) return this.$message.error('登录失败QAQ')
         this.$message.success('登录成功:)')
 
