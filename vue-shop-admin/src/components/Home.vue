@@ -11,30 +11,38 @@
     <!-- 主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px':'200px'">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边栏菜单 -->
         <el-menu
           background-color="#333744"
           text-color="#fff"
-          active-text-color="#ffd04b"
+          active-text-color="#409EFF"
+          unique-opened
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          router
         >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
             <template slot="title">
-              <i class="el-icon-location"></i>
+              <i :class="iconsObj[item.id]"></i>
               <span>{{ item.authName }}</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item :index="subItem.id+''" v-for="subItem in item.children" :key="subItem.id">
+            <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
               <template slot="title">
-                <i class="el-icon-location"></i>
+                <i class="el-icon-menu"></i>
                 <span>{{ subItem.authName }}</span>
               </template>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>Main</el-main>
+      <el-main>
+        <!-- 路由占位符 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -53,7 +61,7 @@ export default {
             {
               id: 102,
               authName: '用户列表',
-              path: null,
+              path: 'users',
             },
           ],
         },
@@ -65,12 +73,12 @@ export default {
             {
               id: 202,
               authName: '角色列表',
-              path: null,
+              path: 'roles',
             },
             {
               id: 203,
               authName: '权限列表',
-              path: null,
+              path: 'rights',
             },
           ],
         },
@@ -82,21 +90,41 @@ export default {
             {
               id: 302,
               authName: '商品列表',
-              path: null,
+              path: 'goodlist',
             },
             {
               id: 303,
               authName: '分类参数',
-              path: null,
+              path: 'classifyparam',
             },
             {
               id: 304,
               authName: '商品分类',
-              path: null,
+              path: 'goodsclassify',
             },
           ],
         },
+        {
+          id: 401,
+          authName: '订单管理',
+          path: null,
+          children: [],
+        },
+        {
+          id: 501,
+          authName: '数据统计',
+          path: null,
+          children: [],
+        },
       ],
+      iconsObj: {
+        101: 'el-icon-s-custom',
+        201: 'el-icon-s-check',
+        301: 'el-icon-s-cooperation',
+        401: 'el-icon-s-order',
+        501: 'el-icon-s-marketing'
+      },
+      isCollapse: false, //菜单是否折叠
     }
   },
   created() {
@@ -116,6 +144,9 @@ export default {
       this.menuList = res.data
       console.log(res)
     },
+    toggleCollapse() { //点击按钮折叠与展开左侧菜单
+      this.isCollapse = !this.isCollapse
+    }
   },
 }
 </script>
@@ -142,8 +173,20 @@ export default {
 }
 .el-aside {
   background-color: #333744;
+  .el-menu {
+    border-right: none;
+  }
 }
 .el-main {
   background-color: #EAEDF1;
+}
+.toggle-button {
+  background-color: #4A5064;
+  color: #fff;
+  font-size: 10px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer; //鼠标放上去变小手
 }
 </style>
