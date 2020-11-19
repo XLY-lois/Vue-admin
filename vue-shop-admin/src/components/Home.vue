@@ -22,6 +22,7 @@
           :collapse="isCollapse"
           :collapse-transition="false"
           router
+          :default-active="activePath"
         >
           <!-- 一级菜单 -->
           <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
@@ -30,7 +31,7 @@
               <span>{{ item.authName }}</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
+            <el-menu-item @click="saveNavState('/' + subItem.path)" :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
               <template slot="title">
                 <i class="el-icon-menu"></i>
                 <span>{{ subItem.authName }}</span>
@@ -125,10 +126,13 @@ export default {
         501: 'el-icon-s-marketing'
       },
       isCollapse: false, //菜单是否折叠
+      //当前激活的菜单地址
+      activePath: ''
     }
   },
   created() {
     // this.getMenuList()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     logout() {
@@ -146,6 +150,11 @@ export default {
     },
     toggleCollapse() { //点击按钮折叠与展开左侧菜单
       this.isCollapse = !this.isCollapse
+    },
+    //保存菜单的激活状态 然后赋值给menu标签中的default-active属性即可保持当前菜单的高亮状态
+    saveNavState(activePath) {
+      window.sessionStorage.setItem('activePath',activePath)
+      this.activePath = activePath
     }
   },
 }
