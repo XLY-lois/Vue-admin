@@ -15,9 +15,9 @@
         <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边栏菜单 -->
         <el-menu
-          background-color="#333744"
+          background-color="rgb(134, 78, 102)"
           text-color="#fff"
-          active-text-color="#409EFF"
+          active-text-color="#F48FB9"
           unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
@@ -165,7 +165,7 @@ export default {
   height: 100%;
 }
 .el-header {
-  background-color: #373d41;
+  background-color: rgb(185, 113, 143);
   display: flex;
   justify-content: space-between;
   padding-left: 0;
@@ -181,16 +181,16 @@ export default {
   }
 }
 .el-aside {
-  background-color: #333744;
+  background-color:  rgb(134, 78, 102);
   .el-menu {
     border-right: none;
   }
 }
 .el-main {
-  background-color: #EAEDF1;
+  background-color: rgb(234,208,209);
 }
 .toggle-button {
-  background-color: #4A5064;
+  background-color:rgb(196, 97, 140);
   color: #fff;
   font-size: 10px;
   line-height: 24px;

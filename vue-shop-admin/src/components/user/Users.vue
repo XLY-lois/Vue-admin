@@ -22,12 +22,43 @@
       </el-row>
       <!-- 用户列表 -->
       <el-table :data="userlist" style="width: 100%" border="">
+        <!-- 索引列 -->
+        <el-table-column type="index" label="#"></el-table-column>
         <el-table-column prop="username" label="姓名"> </el-table-column>
         <el-table-column prop="email" label="邮箱"> </el-table-column>
         <el-table-column prop="mobile" label="电话"> </el-table-column>
         <el-table-column prop="rolename" label="角色"> </el-table-column>
-        <el-table-column prop="rolename" label="状态"> </el-table-column>
-        <el-table-column label="操作"> </el-table-column>
+        <el-table-column prop="mg_state" label="状态">
+          <template slot-scope="scope">
+            <!-- {{ scope.row }} -->
+            <el-switch v-model="scope.row.mg_state"> </el-switch>
+          </template>
+          <!-- 添加了slot-scope属性就能通过scope.row获取当前行的数据 -->
+        </el-table-column>
+        <el-table-column label="操作" width="180px">
+          <template slot-scope="scope">
+            <!-- 修改 -->
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+            ></el-button>
+            <!-- 删除 -->
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+            ></el-button>
+            <!-- 分配角色 -->
+            <el-tooltip content="分配角色" placement="top" :enterable="false">
+              <el-button
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+              ></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
   </div>
@@ -48,12 +79,14 @@ export default {
           email: 'lalalal@163.com',
           mobile: 12345679,
           rolename: '超高级管理员',
+          mg_state: true,
         },
         {
           username: '小乖',
           email: 'lalalal@163.com',
           mobile: 12345679,
           rolename: '超高级管理员',
+          mg_state: false,
         },
       ],
       total: 0,
