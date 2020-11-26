@@ -60,6 +60,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[1, 2, 5, 10]"
+        :page-size="queryInfo.pagesize"
+        layout="sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -70,7 +81,8 @@ export default {
       // 获取用户列表请求的参数
       queryInfo: {
         query: '',
-        page: 1,
+        //当前页数
+        pagenum: 1,
         pagesize: 2,
       },
       userlist: [
@@ -89,7 +101,7 @@ export default {
           mg_state: false,
         },
       ],
-      total: 0,
+      total: 2,
     }
   },
   created() {
@@ -106,6 +118,18 @@ export default {
       this.userlist = res.data.users
       this.total = res.data.tatal
       console.log(res)
+    },
+    handleSizeChange(currentSize) { //每页显示的条数的监听事件
+      console.log(`每页 ${currentSize} 条`)
+      //拿到每页显示的条数之后要在保存到data相应的位置中
+      this.queryInfo.pagesize = currentSize
+      //重新发起请求获取数据
+      // this.getUserList()
+    },
+    handleCurrentChange(currentPage) { //监听当前页码值
+      console.log(`当前页: ${currentPage}`)
+      this.queryInfo.pagenum = currentPage
+      // this.getUserList()
     },
   },
 }
