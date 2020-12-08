@@ -12,12 +12,22 @@
       <!-- 搜索框 -->
       <el-row :gutter="10">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" class="input-with-select">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input
+            placeholder="请输入内容"
+            v-model="queryInfo.query"
+            class="input-with-select"
+            clearable
+            @clear="getUserList()"
+          >
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="getUserList()"
+            ></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
         </el-col>
       </el-row>
       <!-- 用户列表 -->
@@ -30,8 +40,11 @@
         <el-table-column prop="rolename" label="角色"> </el-table-column>
         <el-table-column prop="mg_state" label="状态">
           <template slot-scope="scope">
-            <!-- {{ scope.row }} -->
-            <el-switch v-model="scope.row.mg_state"> </el-switch>
+            <el-switch
+              v-model="scope.row.mg_state"
+              @change="userStateChanged(scope.row)"
+            >
+            </el-switch>
           </template>
           <!-- 添加了slot-scope属性就能通过scope.row获取当前行的数据 -->
         </el-table-column>
@@ -72,6 +85,20 @@
       >
       </el-pagination>
     </el-card>
+    <!-- 添加用户的对话框 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="addDialogVisible"
+      width="50%"
+     >
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -88,6 +115,7 @@ export default {
       userlist: [
         {
           username: '许水水',
+          id: 1,
           email: 'lalalal@163.com',
           mobile: 12345679,
           rolename: '超高级管理员',
@@ -95,6 +123,7 @@ export default {
         },
         {
           username: '小乖',
+          id: 2,
           email: 'lalalal@163.com',
           mobile: 12345679,
           rolename: '超高级管理员',
@@ -102,6 +131,7 @@ export default {
         },
       ],
       total: 2,
+      addDialogVisible: false,//控制对话框的显示与隐藏
     }
   },
   created() {
@@ -110,7 +140,7 @@ export default {
   },
   methods: {
     async getUserList() {
-      const { data: res } = await this.$http.get('/users', {
+      const { data: res } = await this.$http.get('/system/users.do', {
         params: this.queryInfo,
       })
       if (res.meta.status !== 200)
@@ -119,17 +149,32 @@ export default {
       this.total = res.data.tatal
       console.log(res)
     },
-    handleSizeChange(currentSize) { //每页显示的条数的监听事件
+    handleSizeChange(currentSize) {
+      //每页显示的条数的监听事件
       console.log(`每页 ${currentSize} 条`)
       //拿到每页显示的条数之后要在保存到data相应的位置中
       this.queryInfo.pagesize = currentSize
       //重新发起请求获取数据
       // this.getUserList()
     },
-    handleCurrentChange(currentPage) { //监听当前页码值
+    handleCurrentChange(currentPage) {
+      //监听当前页码值
       console.log(`当前页: ${currentPage}`)
       this.queryInfo.pagenum = currentPage
       // this.getUserList()
+    },
+    //监听状态开关的改变
+    async userStateChanged(userInfo) {
+      //发起put请求修改用户状态
+      const res = await this.$http.put(
+        `/system/users/${userInfo.id}/state/${userInfo.mg_state}`
+      )
+      console.log(res)
+      if (res.meta.status !== 200) {
+        userInfo.mg_state = !userInfo.mg_state
+        return this.$message.error('更新用户状态失败:(')
+      }
+      this.$message.success('更新用户状态成功:)')
     },
   },
 }

@@ -141,7 +141,7 @@ export default {
     },
     //获取所有菜单
     async getMenuList() {
-      const res = await this.$http.get('/system/menus').then(function (res) {
+      const res = await this.$http.get('/system/menus.do').then(function (res) {
         return res
       })
       if (res.data.meta.status !== 200) return this.$message.error(res.meta.msg)
