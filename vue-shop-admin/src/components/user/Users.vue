@@ -87,11 +87,24 @@
     </el-card>
     <!-- 添加用户的对话框 -->
     <el-dialog
-      title="提示"
+      title="添加用户"
       :visible.sync="addDialogVisible"
       width="50%"
      >
-      <span>这是一段信息</span>
+     <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="70px">
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="addForm.username"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="addForm.password"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="addForm.email"></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="mobile">
+        <el-input v-model="addForm.mobile"></el-input>
+      </el-form-item>
+     </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addDialogVisible = false"
@@ -104,6 +117,24 @@
 <script>
 export default {
   data() {
+    // 自定义校验规则
+    // 验证邮箱
+    var checkEmail = (rule,value,callback) => {
+      //验证邮箱的正则
+      const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+      if(regEmail.test(value)) {
+        return callback()
+      }
+      callback(new Error('请输入合法的邮箱'))
+    }
+    // 验证手机号
+    var checkMobile = (rule,value,callback) => {
+      const regMobile = /^[1][3,4,5,7,8][0-9]{9}$/
+      if(regMobile.test(value)) {
+        return callback()
+      }
+      callback(new Error('请输入合法的手机号'))
+    }
     return {
       // 获取用户列表请求的参数
       queryInfo: {
@@ -132,6 +163,58 @@ export default {
       ],
       total: 2,
       addDialogVisible: false,//控制对话框的显示与隐藏
+      addForm: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      }, //添加用户表单的数据对象
+      addFormRules: {
+        username: [
+          {
+            required: true,
+            message: '请输入用户名。',
+            trggier: 'blur'
+          },
+          {
+            min: 3,
+            max: 10,
+            message: '用户名的长度在3-10字符之间。',
+            trggier: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码。',
+            trggier: 'blur'
+          },
+          {
+            min: 6,
+            max: 15,
+            message: '密码的长度在6-15字符之间。',
+            trggier: 'blur'
+          }
+        ],
+        email: [
+          {
+            required: true,
+            message: '请输入邮箱。',
+            trggier: 'blur'
+          },
+          {
+            validator: checkEmail,
+            trggier: 'blur'
+          }
+        ],
+        mobile: [
+          {
+            required: true,
+            message: '请输入手机号码。',
+            trggier: 'blur'
+          },
+        ]
+      } //添加用户表单的验证规则对象
     }
   },
   created() {
