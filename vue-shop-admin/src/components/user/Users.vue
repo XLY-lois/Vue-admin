@@ -27,7 +27,9 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
+          <el-button type="primary" @click="addDialogVisible = true"
+            >添加用户</el-button
+          >
         </el-col>
       </el-row>
       <!-- 用户列表 -->
@@ -55,6 +57,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
+              @click="showEditDialog()"
             ></el-button>
             <!-- 删除 -->
             <el-button
@@ -90,24 +93,59 @@
       title="添加用户"
       :visible.sync="addDialogVisible"
       width="50%"
-     >
-     <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="70px">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="addForm.username"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="addForm.password"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="addForm.email"></el-input>
-      </el-form-item>
-      <el-form-item label="手机" prop="mobile">
-        <el-input v-model="addForm.mobile"></el-input>
-      </el-form-item>
-     </el-form>
+      @close="addDialogClosed()"
+    >
+      <el-form
+        ref="addFormRef"
+        :model="addForm"
+        :rules="addFormRules"
+        label-width="70px"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="addForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false"
+        <el-button type="primary" @click="addUser()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 修改用户的对话框 -->
+    <el-dialog
+      title="修改用户"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="addDialogClosed()"
+    >
+      <el-form
+        ref="addFormRef"
+        :model="addForm"
+        :rules="addFormRules"
+        label-width="70px"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addForm.username" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="addForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDialogVisible = false"
           >确 定</el-button
         >
       </span>
@@ -119,18 +157,18 @@ export default {
   data() {
     // 自定义校验规则
     // 验证邮箱
-    var checkEmail = (rule,value,callback) => {
+    var checkEmail = (rule, value, callback) => {
       //验证邮箱的正则
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
-      if(regEmail.test(value)) {
+      if (regEmail.test(value)) {
         return callback()
       }
       callback(new Error('请输入合法的邮箱'))
     }
     // 验证手机号
-    var checkMobile = (rule,value,callback) => {
+    var checkMobile = (rule, value, callback) => {
       const regMobile = /^[1][3,4,5,7,8][0-9]{9}$/
-      if(regMobile.test(value)) {
+      if (regMobile.test(value)) {
         return callback()
       }
       callback(new Error('请输入合法的手机号'))
@@ -162,59 +200,64 @@ export default {
         },
       ],
       total: 2,
-      addDialogVisible: false,//控制对话框的显示与隐藏
+      addDialogVisible: false, //控制对话框的显示与隐藏
       addForm: {
         username: '',
         password: '',
         email: '',
-        mobile: ''
+        mobile: '',
       }, //添加用户表单的数据对象
       addFormRules: {
         username: [
           {
             required: true,
             message: '请输入用户名。',
-            trggier: 'blur'
+            trggier: 'blur',
           },
           {
             min: 3,
             max: 10,
             message: '用户名的长度在3-10字符之间。',
-            trggier: 'blur'
-          }
+            trggier: 'blur',
+          },
         ],
         password: [
           {
             required: true,
             message: '请输入密码。',
-            trggier: 'blur'
+            trggier: 'blur',
           },
           {
             min: 6,
             max: 15,
             message: '密码的长度在6-15字符之间。',
-            trggier: 'blur'
-          }
+            trggier: 'blur',
+          },
         ],
         email: [
           {
             required: true,
             message: '请输入邮箱。',
-            trggier: 'blur'
+            trggier: 'blur',
           },
           {
             validator: checkEmail,
-            trggier: 'blur'
-          }
+            trggier: 'blur',
+          },
         ],
         mobile: [
           {
             required: true,
             message: '请输入手机号码。',
-            trggier: 'blur'
+            trggier: 'blur',
           },
-        ]
-      } //添加用户表单的验证规则对象
+          {
+            validator: checkMobile,
+            trggier: 'blur',
+          },
+        ],
+      }, //添加用户表单的验证规则对象
+      editDialogVisible: false, //修改用户对话框的显示与隐藏
     }
   },
   created() {
@@ -258,6 +301,30 @@ export default {
         return this.$message.error('更新用户状态失败:(')
       }
       this.$message.success('更新用户状态成功:)')
+    },
+    //监听添加用户对话框的关闭事件
+    addDialogClosed() {
+      // 重置表达
+      this.$refs.addFormRef.resetFields()
+    },
+    // 添加新用户
+    addUser() {
+      this.$refs.addFormRef.validate(async (valid) => {
+        // console.log(valid) // true or false
+        if (!valid) return // 如果校验不通过
+        // 校验通过则发起添加用户请求
+        const { data: res } = await this.$http.post('users', this.addForm)
+        if (res.meta.status !== 201) {
+          this.$message.error('添加用户失败')
+        }
+        this.$message.success('添加用户成功')
+        this.addDialogVisible = false //隐藏添加用户的对话框
+        this.getUserList() //重新获取用户列表数据
+      })
+    },
+    showEditDialog() {
+      //展示编辑用户的对话框
+      this.editDialogVisible = true
     },
   },
 }
