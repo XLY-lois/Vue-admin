@@ -57,7 +57,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="showEditDialog()"
+              @click="showEditDialog(scope.row)"
             ></el-button>
             <!-- 删除 -->
             <el-button
@@ -125,22 +125,21 @@
       title="修改用户"
       :visible.sync="editDialogVisible"
       width="50%"
-      @close="addDialogClosed()"
     >
       <el-form
-        ref="addFormRef"
-        :model="addForm"
-        :rules="addFormRules"
+        ref="editFormRef"
+        :model="editForm"
+        :rules="editFormRules"
         label-width="70px"
       >
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="addForm.username" :disabled="true"></el-input>
+        <el-form-item label="用户名">
+          <el-input v-model="editForm.username" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addForm.email"></el-input>
+          <el-input v-model="editForm.email"></el-input>
         </el-form-item>
         <el-form-item label="手机" prop="mobile">
-          <el-input v-model="addForm.mobile"></el-input>
+          <el-input v-model="editForm.mobile"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -257,7 +256,32 @@ export default {
           },
         ],
       }, //添加用户表单的验证规则对象
+      editFormRules: {
+        email: [
+          {
+            required: true,
+            message: '请输入邮箱。',
+            trggier: 'blur',
+          },
+          {
+            validator: checkEmail,
+            trggier: 'blur',
+          },
+        ],
+        mobile: [
+          {
+            required: true,
+            message: '请输入手机号码。',
+            trggier: 'blur',
+          },
+          {
+            validator: checkMobile,
+            trggier: 'blur',
+          },
+        ],
+      }, //修改用户表单校验规则
       editDialogVisible: false, //修改用户对话框的显示与隐藏
+      editForm: {}, //根据id查询到的用户信息
     }
   },
   created() {
@@ -304,8 +328,8 @@ export default {
     },
     //监听添加用户对话框的关闭事件
     addDialogClosed() {
-      // 重置表达
-      this.$refs.addFormRef.resetFields()
+      // 重置表单
+      this.$refs.addFormRef.resetFields	()
     },
     // 添加新用户
     addUser() {
@@ -322,8 +346,18 @@ export default {
         this.getUserList() //重新获取用户列表数据
       })
     },
-    showEditDialog() {
+    async showEditDialog(user) {
       //展示编辑用户的对话框
+      // console.log(id)
+
+      // 正常来讲应该是通过id发请求查询 此处之间用传入的scope.row模拟
+      console.log(user)
+      this.editForm = user
+
+      // const {data:res} = await this.$http.get('/users/'+id)
+      // if(res.meta.status !== 200 ) return this.$message.error('查询用户信息失败')// 请求失败
+      // this.editForm = res.data
+      // 接口完成后取消注释
       this.editDialogVisible = true
     },
   },
