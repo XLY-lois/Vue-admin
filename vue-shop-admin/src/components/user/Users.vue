@@ -64,6 +64,7 @@
               type="danger"
               icon="el-icon-delete"
               size="mini"
+              @click="removeUserById(scope.row.id)"
             ></el-button>
             <!-- 分配角色 -->
             <el-tooltip content="分配角色" placement="top" :enterable="false">
@@ -121,11 +122,7 @@
     </el-dialog>
 
     <!-- 修改用户的对话框 -->
-    <el-dialog
-      title="修改用户"
-      :visible.sync="editDialogVisible"
-      width="50%"
-    >
+    <el-dialog title="修改用户" :visible.sync="editDialogVisible" width="50%">
       <el-form
         ref="editFormRef"
         :model="editForm"
@@ -329,7 +326,7 @@ export default {
     //监听添加用户对话框的关闭事件
     addDialogClosed() {
       // 重置表单
-      this.$refs.addFormRef.resetFields	()
+      this.$refs.addFormRef.resetFields()
     },
     // 添加新用户
     addUser() {
@@ -359,6 +356,35 @@ export default {
       // this.editForm = res.data
       // 接口完成后取消注释
       this.editDialogVisible = true
+    },
+    //根据id删除删除用户
+    async removeUserById(id) {
+      console.log(id)
+      //弹框询问是否删除数据
+      const confirmResult = await this.$confirm(
+        '是否要真的删除这样用户呢？',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      ).catch((err) => err) //点取消会有错误 因此要捕获然后直接reurn出去
+      //如果用户确认删除则返回字符串confirm 取消返回字符串cancel
+      // console.log(confirmResult)
+      //通过判断返回字符串来确认用户点击的是哪个按钮
+      if (confirmResult != 'confirm') {
+        return this.$message.info('已取消删除用户操作')
+      }
+      // 发起删除用户请求
+      // 后端接口写完后取消注释
+      // const { data: res } = await this.$http.delete('/users/' + id)
+      // if (res.meta.status !== 200) {
+      //   return this.$message.err('删除用户失败')
+      // }
+      this.$message.success('删除用户成功：)')
+      console.log('已经删除用户')
+      this.getUserList() // 重新获取用户列表
     },
   },
 }
