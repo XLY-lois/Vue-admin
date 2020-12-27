@@ -1,40 +1,50 @@
 <template>
   <div class="login_container">
-    <div class="login_box">
-      <div class="avatar_box">
-        <!-- 头像 -->
-        <img src="../assets/logo.png" alt="" />
-      </div>
-      <!-- 登录表单 -->
-      <el-form
-        ref="loginFormRef"
-        :model="loginForm"
-        :rules="loginFormRules"
-        label-width="0px"
-        class="login_form"
-      >
-        <!-- 用户名 -->
-        <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            prefix-icon="el-icon-user"
-          ></el-input>
-        </el-form-item>
-        <!-- 密码 -->
-        <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            prefix-icon="el-icon-lock"
-            type="password"
-          ></el-input>
-        </el-form-item>
-        <!-- 按钮 -->
-        <el-form-item class="btns">
-          <el-button type="primary" @click="login()">登录</el-button>
-          <el-button type="info" @click="resetLoinForm()">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-container>
+      <!-- header部分 -->
+      <el-header class="login_header"> </el-header>
+      <!-- main主体部分 -->
+      <el-main>
+                <div class="login_box">
+          <div class="avatar_box">
+            <!-- 头像 -->
+            <img src="../assets/logo.png" alt="" />
+          </div>
+          <!-- 登录表单 -->
+          <el-form
+            ref="loginFormRef"
+            :model="loginForm"
+            :rules="loginFormRules"
+            label-width="0px"
+            class="login_form"
+          >
+            <!-- 用户名 -->
+            <el-form-item prop="username">
+              <el-input
+                v-model="loginForm.username"
+                prefix-icon="el-icon-user"
+              ></el-input>
+            </el-form-item>
+            <!-- 密码 -->
+            <el-form-item prop="password">
+              <el-input
+                v-model="loginForm.password"
+                prefix-icon="el-icon-lock"
+                type="password"
+              ></el-input>
+            </el-form-item>
+            <!-- 按钮 -->
+            <el-form-item class="btns">
+              <el-button type="primary" @click="login()">登录</el-button>
+              <el-button type="info" @click="resetLoinForm()">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+
+      </el-main>
+      <!-- footer部分 -->
+      <el-footer class="login_footer"></el-footer>
+    </el-container>
   </div>
 </template>
 
@@ -120,17 +130,35 @@ export default {
 
 <style lang="less" scoped>
 .login_container {
-  background-color: rgb(224,205,207);
+  background-color: rgb(224, 205, 207);
   height: 100%;
+}
+.el-main {
+  overflow: hidden;
+  height: 635px;
+}
+.el-header {
+  padding: 0;
+  margin: 0;
+}
+.login_header {
+  width: 100%;
+  height: 80px;
+  background-color: rgb(185, 113, 143);
+}
+.login_footer {
+  width: 100%;
+  height: 80px;
+  background-color: rgb(185, 113, 143);
 }
 .login_box {
   width: 450px;
   height: 300px;
   background-color: #fff;
   border-radius: 3px;
-  position: absolute;
+  position: relative;
   left: 50%;
-  top: 50%;
+  top: 300px;
   transform: translate(-50%, -50%);
   .avatar_box {
     height: 130px;

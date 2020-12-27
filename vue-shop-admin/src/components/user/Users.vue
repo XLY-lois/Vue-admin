@@ -369,7 +369,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning',
         }
-      ).catch((err) => err) //点取消会有错误 因此要捕获然后直接reurn出去
+      ).catch((err) => err) //点取消会有错误 因此要捕获然后直接return出去
       //如果用户确认删除则返回字符串confirm 取消返回字符串cancel
       // console.log(confirmResult)
       //通过判断返回字符串来确认用户点击的是哪个按钮
